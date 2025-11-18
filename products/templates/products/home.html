@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .hero-btn-group {
+        display: flex; 
+        gap: 10px; 
+        flex-wrap: wrap; 
+    }
+    
+    .promo-banner {
+        background: linear-gradient(90deg, #e0f7fa 0%, #e1f5fe 100%); 
+        border-radius: 12px; 
+        padding: 2rem; 
+        margin: 3rem 0; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+        .hero-desc { max-width: 100% !important; }
+        
+        .promo-banner {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        
+        .promo-banner .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<section class="hero-section">
+    <div class="banner-card">
+        <span style="background: #e3f2fd; color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; display: inline-block;">Trusted by 1 Million+ Users</span>
+        <h1>Welcome to PharmaCare</h1>
+        <p class="hero-desc" style="color: #555; margin-bottom: 1.5rem; max-width: 80%;">Your trusted partner for genuine medicines, daily essentials, and diagnostic tests.</p>
+        
+        <div class="hero-btn-group">
+            <a href="/products/" class="btn-primary">Browse Medicines</a>
+            <a href="/" style="padding: 0.8rem 1.5rem; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 6px; font-weight: 600; background: white; white-space: nowrap;">Upload Rx</a>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <div class="action-card">
+            <div class="ac-text">
+                <h3>Order via Prescription</h3>
+                <p>We read the Rx for you</p>
+            </div>
+            <div class="ac-icon"><i class="fas fa-file-medical-alt"></i></div>
+        </div>
+        <div class="action-card" style="background: #fff3cd;">
+            <div class="ac-text">
+                <h3>Plus Membership</h3>
+                <p style="color: #856404;">Save extra 5% on every order</p>
+            </div>
+            <div class="ac-icon"><i class="fas fa-crown" style="color: #856404;"></i></div>
+        </div>
+    </div>
+</section>
+
+<h2 class="section-title">Shop by Category</h2>
+<div class="category-scroll">
+    <a href="{% url 'products:product_list' %}" class="cat-item">
+        <div class="cat-img"><i class="fas fa-pills"></i></div>
+        <span class="cat-name">Medicines</span>
+    </a>
+    <a href="/category/vitamins" class="cat-item">
+        <div class="cat-img"><i class="fas fa-apple-alt"></i></div>
+        <span class="cat-name">Vitamins</span>
+    </a>
+    <a href="/category/diabetes" class="cat-item">
+        <div class="cat-img"><i class="fas fa-tint"></i></div>
+        <span class="cat-name">Diabetes</span>
+    </a>
+    <a href="/category/devices" class="cat-item">
+        <div class="cat-img"><i class="fas fa-heartbeat"></i></div>
+        <span class="cat-name">Devices</span>
+    </a>
+    <a href="/category/ayurveda" class="cat-item">
+        <div class="cat-img"><i class="fas fa-leaf"></i></div>
+        <span class="cat-name">Ayurveda</span>
+    </a>
+    <a href="/category/baby" class="cat-item">
+        <div class="cat-img"><i class="fas fa-baby-carriage"></i></div>
+        <span class="cat-name">Baby Care</span>
+    </a>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+    <h2 class="section-title" style="margin: 0;">Featured Products</h2>
+    <a href="/products/" style="color: var(--secondary-color); font-weight: 600; font-size: 0.9rem;">View All <i class="fas fa-chevron-right"></i></a>
+</div>
+
+<div class="product-grid" style="margin-top: 1.5rem;">
+
+    <div class="product-card">
+        <div style="position: absolute; top: 10px; right: 10px; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; border: 1px solid #ffeeba; z-index: 2;">
+            <i class="fas fa-file-prescription"></i> Rx
+        </div>
+        <span class="discount-tag">10% OFF</span>
+        
+        <div class="prod-img-container">
+            <i class="fas fa-heartbeat fa-4x" style="color: #ff6b6b;"></i>
+        </div>
+        
+        <h3 class="prod-name">CardioGuard 10mg Tablets (Strip of 15)</h3>
+        <p class="prod-desc">Maintains healthy heart rhythm</p>
+        
+        <div class="prod-pricing">
+            <span class="mrp">$50.50</span>
+            <span class="final-price">$45.50</span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px;">
+             <button style="border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; color: var(--text-light); font-size: 1.1rem;">
+                <i class="far fa-heart"></i>
+            </button>
+            <button class="add-btn">Add</button>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <span class="discount-tag" style="background: #e8f5e9; color: #2e7d32;">BESTSELLER</span>
+        
+        <div class="prod-img-container">
+            <i class="fas fa-capsules fa-4x" style="color: var(--secondary-color);"></i>
+        </div>
+        
+        <h3 class="prod-name">FastRelief Extra Strength Gel</h3>
+        <p class="prod-desc">Rapid action pain reliever</p>
+        
+        <div class="prod-pricing">
+            <span class="mrp">$15.00</span>
+            <span class="final-price">$12.99</span>
+        </div>
+        
+        <button class="add-btn">Add</button>
+    </div>
+
+    <div class="product-card">
+        <span class="discount-tag">20% OFF</span>
+        
+        <div class="prod-img-container">
+            <i class="fas fa-sun fa-4x" style="color: #fbc02d;"></i>
+        </div>
+        
+        <h3 class="prod-name">VitaBoost Multi-Vitamin Immunity</h3>
+        <p class="prod-desc">Vit C, D, and Zinc support</p>
+        
+        <div class="prod-pricing">
+            <span class="mrp">$24.99</span>
+            <span class="final-price">$19.99</span>
+        </div>
+        
+        <button class="add-btn">Add</button>
+    </div>
+
+    <div class="product-card">
+        <div class="prod-img-container">
+            <i class="fas fa-baby fa-4x" style="color: #f48fb1;"></i>
+        </div>
+        
+        <h3 class="prod-name">SoftTouch Baby Lotion (200ml)</h3>
+        <p class="prod-desc">Hypoallergenic & Gentle</p>
+        
+        <div class="prod-pricing">
+            <span class="final-price">$8.50</span>
+        </div>
+        
+        <button class="add-btn">Add</button>
+    </div>
+
+</div>
+
+<div class="promo-banner">
+    <div>
+        <h2 style="color: var(--primary-color); margin-bottom: 0.5rem; font-size: 1.4rem;">Book Full Body Checkups</h2>
+        <p style="color: #555;">Includes Iron, Vitamin, Thyroid & 50+ tests. Home collection available.</p>
+    </div>
+    <a href="/lab-tests" class="btn-primary" style="background: var(--secondary-color); display: inline-flex; align-items: center; gap: 8px;">
+        Book Now <i class="fas fa-arrow-right" style="font-size: 0.8rem;"></i>
+    </a>
+</div>
+
+{% endblock %}

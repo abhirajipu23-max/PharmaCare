@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 style="margin-bottom: 2rem;">Shopping Cart</h2>
+    
+    {% if cart.items.all %}
+    <div style="display: grid; gap: 2rem;">
+        <div>
+            {% for item in cart.items.all %}
+            <div class="cart-item">
+                <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect fill=%22%23e0e0e0%22 width=%2280%22 height=%2280%22/%3E%3C/svg%3E'">
+                    <div>
+                        <h3>{{ item.product.name }}</h3>
+                        <p style="color: #666;">${{ item.product.price }} each</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <form method="POST" action="/cart/update/{{ item.id }}/" style="display: flex; align-items: center; gap: 0.5rem;">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 6px;">
+                        <button type="submit" class="btn" style="padding: 0.5rem 1rem;">Update</button>
+                    </form>
+                    
+                    <div style="font-size: 1.3rem; font-weight: 600; color: #667eea; min-width: 80px; text-align: right;">
+                        ${{ item.get_subtotal }}
+                    </div>
+                    
+                    <a href="/cart/remove/{{ item.id }}/" style="color: #dc3545; font-size: 1.5rem; text-decoration: none;">✕</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-total">
+            <h2 style="margin-bottom: 1rem;">Cart Total</h2>
+            <p style="font-size: 2rem; color: #667eea; font-weight: bold; margin-bottom: 1.5rem;">${{ cart.get_total }}</p>
+            <a href="/cart/checkout/" class="btn" style="font-size: 1.1rem; padding: 1rem 2rem;">Proceed to Checkout</a>
+        </div>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem; background: white; border-radius: 15px;">
+        <p style="font-size: 1.3rem; color: #666; margin-bottom: 1rem;">Your cart is empty</p>
+        <a href="/products/" class="btn">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

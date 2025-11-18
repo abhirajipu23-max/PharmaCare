@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .auth-wrapper {
+        min-height: 70vh; /* Slightly taller for registration */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    .auth-container {
+        background: var(--white);
+        width: 100%;
+        max-width: 450px; /* Slightly wider for registration form */
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    .auth-container h2 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+        background: #fafafa;
+    }
+
+    .form-group input:focus {
+        border-color: var(--secondary-color);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(36, 174, 177, 0.1);
+    }
+
+    /* Button Style */
+    .btn-register {
+        background: var(--accent-color); /* Orange for action */
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background 0.2s;
+    }
+
+    .btn-register:hover {
+        background: #e68a00;
+    }
+
+    /* Clean up Django's default error list styling */
+    .alert-error ul {
+        margin: 0;
+        padding-left: 1rem;
+        list-style-type: disc;
+    }
+    
+    .alert-error li {
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+    }
+
+    /* Help text (password rules) styling */
+    .helptext {
+        font-size: 0.75rem;
+        color: var(--text-light);
+        margin-top: 4px;
+        display: block;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    .login-link a {
+        color: var(--secondary-color);
+        font-weight: 600;
+    }
+    
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 480px) {
+        .auth-container {
+            padding: 1.5rem;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+        .auth-wrapper {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <h2>Create Account</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div style="color: #dc3545; font-size: 0.8rem; margin-top: 4px;">{{ form.username.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div style="color: #dc3545; font-size: 0.8rem; margin-top: 4px;">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                    <span class="helptext">{{ form.password1.help_text }}</span>
+                {% endif %}
+                {% if form.password1.errors %}
+                    <div style="color: #dc3545; font-size: 0.8rem; margin-top: 4px;">{{ form.password1.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div style="color: #dc3545; font-size: 0.8rem; margin-top: 4px;">{{ form.password2.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn-register">Register Now</button>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="/accounts/login/">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

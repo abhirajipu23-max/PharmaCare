@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 style="margin-bottom: 2rem;">My Profile</h2>
+    
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h3>Account Information</h3>
+        <p style="margin-top: 1rem;"><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+    
+    <h3 style="margin-bottom: 1.5rem;">Order History</h3>
+    
+    {% if orders %}
+    {% for order in orders %}
+    <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <h4>Order #{{ order.id }}</h4>
+                <p style="color: #666;">{{ order.created_at|date:"F d, Y" }}</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="padding: 0.5rem 1rem; background: #667eea; color: white; border-radius: 20px;">{{ order.status }}</span>
+                <p style="font-size: 1.3rem; font-weight: 600; color: #667eea; margin-top: 0.5rem;">${{ order.total_price }}</p>
+            </div>
+        </div>
+        
+        <div style="border-top: 1px solid #e0e0e0; padding-top: 1rem;">
+            {% for item in order.items.all %}
+            <p style="color: #666;">{{ item.quantity }}x {{ item.product.name }} - ${{ item.price }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div style="text-align: center; padding: 3rem; background: white; border-radius: 15px;">
+        <p style="color: #666; margin-bottom: 1rem;">No orders yet</p>
+        <a href="/products/" class="btn">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

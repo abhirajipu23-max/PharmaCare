@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 style="margin-bottom: 1.5rem;">
+        {% if query %}Search Results for "{{ query }}"{% else %}All Products{% endif %}
+    </h2>
+    
+    <div class="product-grid" style="display: block;">
+        {% for product in products %}
+        <div class="product-card" style="width:100%; margin-bottom: 1.5rem;">
+            
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                 style="width:150px; height:auto; margin-bottom:1rem; border-radius:8px;">
+            {% endif %}
+
+            {% if product.requires_prescription %}
+            <span class="prescription-badge">⚕️ Prescription Required</span>
+            {% endif %}
+
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">${{ product.price }}</div>
+            <p style="color: #666; margin-bottom: 1rem;">Stock: {{ product.stock }} units</p>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="/product/{{ product.slug }}/" class="btn">View Details</a>
+                {% if user.is_authenticated %}
+                <a href="/cart/add/{{ product.id }}/" class="btn btn-secondary">Add to Cart</a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p style="text-align: center; padding: 3rem;">No products found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
