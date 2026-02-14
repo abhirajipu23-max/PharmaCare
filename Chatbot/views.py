@@ -7,7 +7,7 @@ from .utils import get_groq_response
 
 # Create your views here.
 def home(request):
-    return render(request, 'chatbot_page.html')
+    return render(request, 'chatbot.html')
 
 def product_list(request):
     return render(request, 'chatbot.html')
