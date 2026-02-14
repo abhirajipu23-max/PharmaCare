@@ -102,56 +102,60 @@ class ProductsApi(viewsets.ModelViewSet):
         })
 
 def upload_rx(request):
-    import pytesseract
     import groq
     import json
     import os
-    from PIL import Image
+    import base64
     
     if request.method == 'POST' and request.FILES.get('rx_image'):
         try:
             image_file = request.FILES['rx_image']
             
-            # Save temp file for OCR (Pytesseract robustly handles file paths)
-            path = default_storage.save(f"temp/{image_file.name}", ContentFile(image_file.read()))
-            full_path = os.path.join(settings.MEDIA_ROOT, path)
-
-            # 1. OCR Extraction (Pytesseract)
-            try:
-                # Assuming tesseract is in PATH on Render (or configured via buildpack)
-                extracted_text = pytesseract.image_to_string(Image.open(full_path))
-            except Exception as e:
-                logging.error(f"Pytesseract error: {e}")
-                extracted_text = ""
-                return render(request, 'products/upload_rx.html', {'error': 'OCR Error: Could not read image. Please ensure Tesseract is installed on the server.'})
-            finally:
-                 # Clean up temp file
-                if os.path.exists(full_path):
-                    os.remove(full_path)
-
-            if not extracted_text.strip():
-                 return render(request, 'products/upload_rx.html', {'error': 'Could not extract any text from the image. Please try a clearer image.'})
-
-            # 2. Groq Extraction (Text)
+            # Read image file and encode to base64
+            image_data = image_file.read()
+            base64_image = base64.b64encode(image_data).decode('utf-8')
+            
             api_key = settings.GROQ_API_KEY
             if not api_key:
                 return render(request, 'products/upload_rx.html', {'error': 'System Error: Groq API Key missing. Please set GROQ_API_KEY in .env'})
             
             client = groq.Groq(api_key=api_key)
-            prompt = f"""
-            Identify all medicine names in the following text. 
-            Return ONLY a valid JSON list of strings (e.g. ["Medicine A", "Medicine B"]). 
-            Do not include any other text or markdown formatting.
             
-            Text: "{extracted_text}"
-            """
-            
-            chat_completion = client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile",
-            )
-            
-            response_content = chat_completion.choices[0].message.content.strip()
+            # Prompt for Vision Model (Llama 4 Scout)
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text", 
+                            "text": "Identify all medicine names in this prescription image. Return ONLY a valid JSON list of strings (e.g. [\"Medicine A\", \"Medicine B\"]). Do not include any other text or markdown formatting."
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}",
+                            },
+                        },
+                    ],
+                }
+            ]
+
+            try:
+                # Use Llama 4 Scout which is multimodal
+                chat_completion = client.chat.completions.create(
+                    messages=messages,
+                    model="meta-llama/llama-4-scout-17b-16e-instruct",
+                    temperature=0.1 # Low temperature for more deterministic JSON
+                )
+                response_content = chat_completion.choices[0].message.content.strip()
+            except groq.BadRequestError as e:
+                # Fallback to Maverick if Scout fails
+                logging.warning(f"Llama 4 Scout failed, trying Maverick: {e}")
+                chat_completion = client.chat.completions.create(
+                    messages=messages,
+                    model="meta-llama/llama-4-maverick-17b-128e-instruct",
+                )
+                response_content = chat_completion.choices[0].message.content.strip()
             
             # Clean up potential markdown code blocks
             if response_content.startswith('```json'):
@@ -173,7 +177,7 @@ def upload_rx(request):
                 detected_medicines = []
                 logging.error(f"Failed to parse Groq response: {response_content}")
             
-            # 3. Product Matching
+            # Product Matching
             matched_products = []
             for med in detected_medicines:
                 # Search by name (icontains)
