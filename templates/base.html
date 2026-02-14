@@ -1137,6 +1137,7 @@
                 <a href="/">Vitamins</a>
                 <a href="/">Diabetes</a>
                 <a href="/">Blogs</a>
+                <a href="/chatbot/" style="color: var(--secondary-color); font-weight: 700;">Ask AI Doctor</a>
             </div>
         </div>
     </nav>
@@ -1201,7 +1202,8 @@
         </div>
     </footer>
 
-    {% if request.path != '/accounts/login/' and request.path != '/accounts/register/' %}
+    {% if request.path != '/accounts/login/' and request.path != '/accounts/register/' and request.path != '/chatbot/'
+    %}
     {% include 'chatbot_widget.html' %}
     {% endif %}
 
