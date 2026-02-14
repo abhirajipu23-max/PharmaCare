@@ -1,0 +1,106 @@
+<div class="chatbot-container">
+    <div class="chatbot-button" id="chatbot-trigger">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div class="chatbot-panel" id="chatbot-panel">
+        <div class="chatbot-header">
+            <div class="chatbot-header-left">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-title">
+                    <h4>PharmaBot</h4>
+                    <p>Always here to help</p>
+                </div>
+            </div>
+            <div class="chatbot-close" id="chatbot-close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="message bot">
+                <div class="message-content">Hello! How can I help you regarding medicines today?</div>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const trigger = document.getElementById('chatbot-trigger');
+        const close = document.getElementById('chatbot-close');
+        const panel = document.getElementById('chatbot-panel');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('chat-send');
+        const messages = document.getElementById('chatbot-messages');
+
+        if (trigger && panel) {
+            function toggleChat() {
+                panel.classList.toggle('active');
+            }
+            trigger.addEventListener('click', toggleChat);
+            if (close) close.addEventListener('click', toggleChat);
+        }
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Add user message
+            appendMessage('user', text);
+            input.value = '';
+
+            try {
+                const response = await fetch('/chatbot/api/chat/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+                appendMessage('bot', data.response || "I didn't declare a response.");
+            } catch (error) {
+                console.error('Error:', error);
+                appendMessage('bot', "Sorry, I'm having trouble connecting right now.");
+            }
+        }
+
+        if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if (input) input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function appendMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            messages.appendChild(msgDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
