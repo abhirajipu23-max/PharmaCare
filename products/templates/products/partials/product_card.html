@@ -1,0 +1,38 @@
+<div class="product-card">
+
+    {% if product.requires_prescription %}
+    <div
+        style="position: absolute; top: 10px; right: 10px; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; border: 1px solid #ffeeba; z-index: 2;">
+        <i class="fas fa-file-prescription"></i> Rx
+    </div>
+    {% endif %}
+
+    <div class="prod-img-container">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+            style="width: 100%; height: 100%; object-fit: contain;">
+        {% elif product.image_url %}
+        <img src="{{ product.image_url }}" alt="{{ product.name }}"
+            style="width: 100%; height: 100%; object-fit: contain;">
+        {% else %}
+        <i class="fas fa-box-open fa-4x" style="color: var(--secondary-color);"></i>
+        {% endif %}
+    </div>
+
+    <h3 class="prod-name"><a href="{% url 'products:product_detail' product.slug %}"
+            style="text-decoration: none; color: inherit;">{{ product.name }}</a></h3>
+    <p class="prod-desc">{{ product.description|truncatewords:8 }}</p>
+
+    <div class="prod-pricing">
+        <span class="final-price">₹{{ product.price }}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px; width: 100%;">
+        <button
+            style="border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; color: var(--text-light); font-size: 1.1rem;">
+            <i class="far fa-heart"></i>
+        </button>
+        <a href="{% url 'cart:add_to_cart' product.id %}" class="add-btn"
+            style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Add</a>
+    </div>
+</div>

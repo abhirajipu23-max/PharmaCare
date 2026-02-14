@@ -1,39 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>{% block title %}PharmaCare - Trusted Online Pharmacy{% endblock %}</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary-color: #02475b; /* Deep Teal (Apollo-like) */
-            --secondary-color: #24aeb1; /* Lighter Teal */
-            --accent-color: #fc9919; /* Action Orange */
+            --primary-color: #02475b;
+            /* Deep Teal (Apollo-like) */
+            --secondary-color: #24aeb1;
+            /* Lighter Teal */
+            --accent-color: #fc9919;
+            /* Action Orange */
             --text-dark: #151b39;
             --text-light: #757c8e;
             --bg-light: #f1f2f4;
             --white: #ffffff;
             --success: #00b050;
             --border: #e0e0e0;
-            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            /* Chat bot variables */
+            --chat-bg: #ffffff;
+            --chat-header: #02475b;
+            --chat-user: #e3f2fd;
+            --chat-bot: #f1f8e9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.5;
             color: var(--text-dark);
             background: var(--bg-light);
             font-size: 14px;
+            overflow-x: hidden;
+            width: 100%;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.2s; }
-        ul { list-style: none; }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+        }
+
+        ul {
+            list-style: none;
+        }
 
         /* --- Header Section --- */
         .top-banner {
@@ -46,9 +68,11 @@
         }
 
         .container {
-            max-width: 1280px;
+            width: 100%;
+            max-width: 1400px;
+            /* Increased from 1280px */
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 20px;
         }
 
         .header-main {
@@ -56,12 +80,12 @@
             align-items: center;
             justify-content: space-between;
             gap: 2rem;
-            flex-wrap: nowrap; /* Default for desktop */
+            flex-wrap: nowrap;
         }
 
         .logo-group {
             display: flex;
-            gap: 20px; 
+            gap: 20px;
             align-items: center;
         }
 
@@ -84,8 +108,10 @@
             cursor: pointer;
             white-space: nowrap;
         }
-        
-        .location-selector i { color: var(--secondary-color); }
+
+        .location-selector i {
+            color: var(--secondary-color);
+        }
 
         .search-container {
             flex: 1;
@@ -139,13 +165,15 @@
             color: var(--text-dark);
         }
 
-        .action-item:hover i { color: var(--secondary-color); }
+        .action-item:hover i {
+            color: var(--secondary-color);
+        }
 
         /* Navigation Bar */
         .nav-bar {
             background: var(--white);
             border-bottom: 1px solid var(--border);
-            padding: 0; /* Adjusted padding for mobile scroll */
+            padding: 0;
         }
 
         .nav-links {
@@ -156,8 +184,10 @@
             color: var(--text-dark);
             padding: 0.8rem 0;
         }
-        
-        .nav-links a:hover { color: var(--secondary-color); }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
 
         /* --- Hero & Action Section --- */
         .hero-section {
@@ -165,6 +195,7 @@
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
+            align-items: stretch;
         }
 
         .banner-card {
@@ -175,6 +206,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
+            height: 100%;
         }
 
         .banner-card h1 {
@@ -203,11 +235,25 @@
             height: 100%;
         }
 
-        .action-card:hover { transform: translateY(-3px); }
+        .action-card:hover {
+            transform: translateY(-3px);
+        }
 
-        .ac-text h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
-        .ac-text p { font-size: 0.85rem; color: var(--success); font-weight: 600; }
-        .ac-icon { font-size: 2rem; color: var(--secondary-color); }
+        .ac-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .ac-text p {
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .ac-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
 
         .btn-primary {
             background: var(--accent-color);
@@ -219,8 +265,10 @@
             cursor: pointer;
             display: inline-block;
         }
-        
-        .btn-primary:hover { background: #e68a00; }
+
+        .btn-primary:hover {
+            background: #e68a00;
+        }
 
         /* --- Category Circle Section --- */
         .section-title {
@@ -235,10 +283,12 @@
             gap: 2rem;
             overflow-x: auto;
             padding-bottom: 1rem;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
-        
-        .category-scroll::-webkit-scrollbar { display: none; }
+
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
 
         .cat-item {
             display: flex;
@@ -256,38 +306,47 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             margin-bottom: 0.8rem;
             transition: 0.3s;
             font-size: 2rem;
             color: var(--secondary-color);
         }
-        
-        .cat-item:hover .cat-img { box-shadow: 0 4px 15px rgba(36, 174, 177, 0.3); }
-        .cat-name { font-size: 0.9rem; font-weight: 500; text-align: center; }
+
+        .cat-item:hover .cat-img {
+            box-shadow: 0 4px 15px rgba(36, 174, 177, 0.3);
+        }
+
+        .cat-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+        }
 
         /* --- Product Grid --- */
         .product-grid {
             display: grid;
-            /* Responsive Grid Logic */
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
             margin-bottom: 3rem;
+            justify-content: center;
         }
 
         .product-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.5rem;
             position: relative;
             transition: box-shadow 0.3s;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .product-card:hover {
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             border-color: transparent;
         }
 
@@ -320,41 +379,36 @@
 
         .prod-name {
             font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
+            font-weight: 700;
+            /* Bolder title */
+            color: #333;
+            /* Darker text */
+            margin-bottom: 0.5rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             height: 3rem;
             line-height: 1.5rem;
+            width: 100%;
         }
 
         .prod-desc {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-bottom: 0.8rem;
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 0.5rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .prod-pricing {
-            margin-top: auto;
-            margin-bottom: 1rem;
-        }
-
-        .mrp {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            text-decoration: line-through;
-            margin-right: 5px;
+            width: 100%;
         }
 
         .final-price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-dark);
+            font-size: 1.25rem;
+            /* Larger price */
+            font-weight: 800;
+            color: #0f1111;
+            /* Amazon-like black/dark color */
         }
 
         .add-btn {
@@ -367,11 +421,17 @@
             border-radius: 6px;
             cursor: pointer;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            /* Ensure link looks like button */
         }
 
         .add-btn:hover {
-            background: var(--secondary-color);
-            color: var(--white);
+            background: rgba(36, 174, 177, 0.1);
+            /* Subtle hover instead of solid */
+            color: var(--secondary-color);
         }
 
         /* --- Footer --- */
@@ -398,17 +458,19 @@
         .footer-col ul li {
             margin-bottom: 0.6rem;
         }
-        
+
         .footer-col ul li a {
             color: var(--text-light);
             font-size: 0.9rem;
         }
-        
-        .footer-col ul li a:hover { color: var(--secondary-color); }
+
+        .footer-col ul li a:hover {
+            color: var(--secondary-color);
+        }
 
         .footer-bottom {
             background: var(--primary-color);
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             text-align: center;
             padding: 1.5rem;
             font-size: 0.85rem;
@@ -421,117 +483,583 @@
             margin: 1rem auto;
             max-width: 1280px;
         }
-        .alert-success { background: #d4edda; color: #155724; }
-        .alert-error { background: #f8d7da; color: #721c24; }
 
-        /* =========================================
-           RESPONSIVE MEDIA QUERIES
-           ========================================= */
-        
-        /* Tablets and Smaller Laptops (max 1024px) */
-        @media (max-width: 1024px) {
-            .header-main { gap: 1rem; }
-            .nav-links { gap: 1rem; font-size: 0.85rem; }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
         }
 
-        /* Mobile Devices (max 768px) */
-        @media (max-width: 768px) {
-            /* Header: Stack items */
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* =========================================
+           CHAT BOT ASSISTANT
+           ========================================= */
+
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 2px solid var(--white);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 26px;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .chatbot-button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+            animation: none;
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: var(--chat-bg);
+            border-radius: 12px;
+            box-shadow: 0 5px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .chatbot-panel.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: var(--chat-header);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .chatbot-title h4 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .chatbot-title p {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .chatbot-close:hover {
+            opacity: 1;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f8fafc;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background: var(--chat-bot);
+            border-bottom-left-radius: 4px;
+            color: #1e3a5f;
+        }
+
+        .message.user .message-content {
+            background: var(--chat-user);
+            border-bottom-right-radius: 4px;
+            color: #0a3147;
+        }
+
+        .message-time {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            margin-left: 5px;
+        }
+
+        .chatbot-input {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            background: var(--white);
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .chatbot-input input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .chatbot-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-input button:hover {
+            background: var(--primary-color);
+        }
+
+        .chatbot-input button i {
+            font-size: 1rem;
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .quick-reply {
+            background: var(--white);
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-reply:hover {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+        /* =========================================
+           RESPONSIVE MEDIA QUERIES - COMPLETELY FIXED
+           ========================================= */
+
+        /* Large Desktop (1200px and above) */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+
+            .product-grid {
+                /* Let auto-fit handle it */
+            }
+        }
+
+        /* Desktop (992px to 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container {
+                max-width: 960px;
+            }
+
+            .product-grid {
+                /* Let auto-fit handle it */
+            }
+
+            .hero-section {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        /* Tablets and Small Laptops (768px to 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container {
+                max-width: 720px;
+            }
+
+            .header-main {
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .location-selector span:not(strong) {
+                display: none;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+                font-size: 0.85rem;
+            }
+
+            .hero-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .banner-card {
+                padding: 2rem;
+            }
+
+            .quick-actions {
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .prod-img-container {
+                height: 140px;
+            }
+
+            /* Chat bot tablet adjustments */
+            .chatbot-container {
+                bottom: 25px;
+                right: 25px;
+            }
+
+            .chatbot-button {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+
+            .chatbot-panel {
+                width: 320px;
+                height: 480px;
+            }
+        }
+
+        /* Mobile Devices (max 767px) */
+        @media (max-width: 767px) {
+            .container {
+                max-width: 100%;
+                padding: 0 15px;
+            }
+
+            /* Responsive mobile grid */
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .product-card {
+                padding: 0.5rem;
+                /* Reduced padding */
+                border-radius: 8px;
+            }
+
+            .discount-tag {
+                font-size: 0.6rem;
+                padding: 2px 4px;
+                top: 5px;
+                left: 5px;
+            }
+
+            .prod-img-container {
+                height: 80px;
+                /* Smaller image area */
+                margin-bottom: 0.5rem;
+            }
+
+            .prod-name {
+                font-size: 0.7rem;
+                /* Smaller text */
+                height: 2rem;
+                line-height: 1rem;
+                margin-bottom: 0.2rem;
+                -webkit-line-clamp: 2;
+            }
+
+            .prod-desc {
+                display: none;
+                /* Hide description on mobile to save space */
+            }
+
+            .prod-pricing {
+                margin-bottom: 0.5rem;
+                flex-direction: column;
+                /* Stack prices if needed */
+                align-items: flex-start;
+            }
+
+            .mrp {
+                font-size: 0.65rem;
+            }
+
+            .final-price {
+                font-size: 0.8rem;
+            }
+
+            .add-btn {
+                padding: 0.3rem;
+                font-size: 0.7rem;
+                height: auto;
+            }
+
+            /* ... Header and other mobile styles ... */
             .header-main {
                 flex-wrap: wrap;
-                padding-bottom: 0.5rem;
+                gap: 0.5rem;
             }
 
+            /* (Existing mobile styles tailored for compact layout) */
             .logo-group {
                 flex: 1;
+                gap: 5px;
             }
 
-            /* Move search bar to the next line on mobile */
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .logo i {
+                font-size: 1.1rem;
+            }
+
+            .location-selector {
+                display: none;
+            }
+
             .search-container {
                 order: 3;
                 width: 100%;
                 margin-top: 0.5rem;
             }
 
-            .location-selector {
-                display: none; /* Hide location on small mobile to save space */
+            .user-actions {
+                gap: 0.8rem;
             }
 
             .user-actions span {
-                display: none; /* Hide text labels (Profile, Cart) on mobile, keep icons */
-            }
-            
-            .user-actions {
-                gap: 1.2rem;
+                display: none;
             }
 
-            /* Navigation: Horizontal Scroll */
-            .nav-bar .container {
-                padding: 0 10px;
-            }
-            
             .nav-links {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding: 1rem 0;
-                gap: 1.5rem;
-                scrollbar-width: none; /* Firefox */
-                -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+                padding: 0.5rem 0;
+                gap: 1rem;
+                font-size: 0.8rem;
             }
-            .nav-links::-webkit-scrollbar { display: none; }
 
-            /* Hero Section: Stack vertical */
             .hero-section {
-                grid-template-columns: 1fr;
-                padding: 1rem 0;
+                padding: 0.5rem 0;
+                gap: 0.5rem;
             }
 
             .banner-card {
-                padding: 2rem;
-                align-items: center;
-                text-align: center;
-            }
-            
-            .quick-actions {
-                flex-direction: row; /* Side by side on mobile if space allows, or wrap */
-                gap: 1rem;
-            }
-            
-            .action-card {
-                flex: 1;
                 padding: 1rem;
             }
 
-            /* Product Grid: 2 items per row for mobile e-commerce feel */
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
-                gap: 10px;
+            .banner-card h1 {
+                font-size: 1.4rem;
+                margin-bottom: 0.5rem;
             }
-            
-            .prod-img-container { height: 120px; }
-            .prod-name { font-size: 0.9rem; height: 2.7rem; }
-            .btn-primary { width: 100%; text-align: center; }
 
-            /* Footer: Stack vertical */
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                text-align: center;
+            .banner-card p {
+                font-size: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .quick-actions {
+                gap: 0.5rem;
+            }
+
+            .action-card {
+                padding: 0.5rem;
+            }
+
+            .ac-text h3 {
+                font-size: 0.8rem;
+            }
+
+            .ac-text p {
+                font-size: 0.6rem;
+            }
+
+            .ac-icon {
+                font-size: 1.2rem;
+            }
+
+            .chatbot-container {
+                bottom: 70px;
+                right: 10px;
+            }
+
+            .chatbot-button {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .chatbot-panel {
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
             }
         }
 
-        /* Very Small Screens (max 480px) */
+        /* Small Mobile Devices (max 480px) */
         @media (max-width: 480px) {
             .quick-actions {
-                flex-direction: column; /* Stack quick actions vertically */
+                flex-direction: column;
             }
-            
-            .cat-item { min-width: 80px; }
-            .cat-img { width: 60px; height: 60px; font-size: 1.5rem; }
-            .cat-name { font-size: 0.8rem; }
+
+            .action-card {
+                width: 100%;
+            }
+
+            .product-grid {
+                gap: 6px;
+            }
+
+            .prod-img-container {
+                height: 90px;
+            }
+
+            .prod-name {
+                font-size: 0.75rem;
+                height: 2.2rem;
+            }
+
+            .prod-desc {
+                font-size: 0.65rem;
+            }
+
+            .final-price {
+                font-size: 0.85rem;
+            }
+
+            .chatbot-container {
+                bottom: 70px;
+                right: 10px;
+            }
+
+            .chatbot-button {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+        }
+
+        /* Landscape Mode for Mobile */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .hero-section {
+                padding: 0.5rem 0;
+            }
+
+            .banner-card {
+                padding: 1rem;
+            }
+
+            .banner-card h1 {
+                font-size: 1.4rem;
+            }
+
+            .product-grid {
+                /* Let auto-fit handle it */
+            }
+
+            .chatbot-container {
+                bottom: 50px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="top-banner">
@@ -550,30 +1078,31 @@
 
                 <form action="/products/" method="GET" class="search-container">
                     <div class="search-box">
-                        <input type="text" name="q" placeholder="Search for medicines..." value="{{ query|default:'' }}">
+                        <input type="text" name="q" placeholder="Search for medicines..."
+                            value="{{ query|default:'' }}">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
 
                 <div class="user-actions">
                     {% if user.is_authenticated %}
-                        <a href="/accounts/profile/" class="action-item">
-                            <i class="far fa-user"></i>
-                            <span>Profile</span>
-                        </a>
-                        <a href="/cart/" class="action-item">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>Cart</span>
-                        </a>
-                        <a href="/accounts/logout/" class="action-item">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </a>
+                    <a href="/accounts/profile/" class="action-item">
+                        <i class="far fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="/cart/" class="action-item">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                    </a>
+                    <a href="/accounts/logout/" class="action-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
                     {% else %}
-                        <a href="/accounts/login/" class="action-item">
-                            <i class="far fa-user"></i>
-                            <span>Login</span>
-                        </a>
+                    <a href="/accounts/login/" class="action-item">
+                        <i class="far fa-user"></i>
+                        <span>Login</span>
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -603,111 +1132,8 @@
     {% endif %}
 
     <div class="container">
-        
-        {% block content %}
-        <section class="hero-section">
-            <div class="banner-card">
-                <h1>Your Health,<br>Our Responsibility</h1>
-                <p style="color: #555; margin-bottom: 1.5rem;">Get flat 15% off on all medicines + Free delivery on orders above $20.</p>
-                <a href="/products/" class="btn-primary">Order Medicines</a>
-            </div>
-            
-            <div class="quick-actions">
-                <div class="action-card">
-                    <div class="ac-text">
-                        <h3>Upload Rx</h3>
-                        <p>FLAT 20% OFF</p>
-                    </div>
-                    <div class="ac-icon"><i class="fas fa-file-prescription"></i></div>
-                </div>
-                <div class="action-card">
-                    <div class="ac-text">
-                        <h3>Lab Tests</h3>
-                        <p>Home collection</p>
-                    </div>
-                    <div class="ac-icon"><i class="fas fa-microscope"></i></div>
-                </div>
-            </div>
-        </section>
 
-        <h2 class="section-title">Shop by Category</h2>
-        <div class="category-scroll">
-            <div class="cat-item">
-                <div class="cat-img"><i class="fas fa-baby"></i></div>
-                <span class="cat-name">Baby Care</span>
-            </div>
-            <div class="cat-item">
-                <div class="cat-img"><i class="fas fa-procedures"></i></div>
-                <span class="cat-name">Personal Care</span>
-            </div>
-            <div class="cat-item">
-                <div class="cat-img"><i class="fas fa-capsules"></i></div>
-                <span class="cat-name">Supplements</span>
-            </div>
-            <div class="cat-item">
-                <div class="cat-img"><i class="fas fa-first-aid"></i></div>
-                <span class="cat-name">Ayurveda</span>
-            </div>
-            <div class="cat-item">
-                <div class="cat-img"><i class="fas fa-hand-holding-heart"></i></div>
-                <span class="cat-name">Sexual Wellness</span>
-            </div>
-        </div>
-
-        <h2 class="section-title">New Arrivals</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <span class="discount-tag">15% OFF</span>
-                <div class="prod-img-container">
-                    <i class="fas fa-pills fa-3x" style="color:#ddd"></i>
-                </div>
-                <h3 class="prod-name">Multivitamin Supreme Tablets (Strip of 15)</h3>
-                <p class="prod-desc">By PharmaCare Labs</p>
-                <div class="prod-pricing">
-                    <span class="mrp">$12.99</span>
-                    <span class="final-price">$10.99</span>
-                </div>
-                <button class="add-btn">Add</button>
-            </div>
-
-            <div class="product-card">
-                <div class="prod-img-container">
-                    <i class="fas fa-flask fa-3x" style="color:#ddd"></i>
-                </div>
-                <h3 class="prod-name">Skin Glow Vitamin C Serum</h3>
-                <p class="prod-desc">By GlowDerma</p>
-                <div class="prod-pricing">
-                    <span class="final-price">$24.50</span>
-                </div>
-                <button class="add-btn">Add</button>
-            </div>
-
-            <div class="product-card">
-                <span class="discount-tag">5% OFF</span>
-                <div class="prod-img-container">
-                    <i class="fas fa-pump-soap fa-3x" style="color:#ddd"></i>
-                </div>
-                <h3 class="prod-name">Hand Sanitizer 500ml</h3>
-                <p class="prod-desc">By SafeHands</p>
-                <div class="prod-pricing">
-                    <span class="mrp">$5.00</span>
-                    <span class="final-price">$4.75</span>
-                </div>
-                <button class="add-btn">Add</button>
-            </div>
-             <div class="product-card">
-                <div class="prod-img-container">
-                    <i class="fas fa-dna fa-3x" style="color:#ddd"></i>
-                </div>
-                <h3 class="prod-name">Diabetes Care Kit Type 2</h3>
-                <p class="prod-desc">Includes Meter + Strips</p>
-                <div class="prod-pricing">
-                    <span class="final-price">$45.00</span>
-                </div>
-                <button class="add-btn">Add</button>
-            </div>
-        </div>
-        {% endblock %}
+        {% block content %}{% endblock %}
     </div>
 
     <footer>
@@ -755,5 +1181,10 @@
         </div>
     </footer>
 
+    {% if request.path != '/accounts/login/' and request.path != '/accounts/register/' %}
+    {% include 'chatbot.html' %}
+    {% endif %}
+
 </body>
+
 </html>

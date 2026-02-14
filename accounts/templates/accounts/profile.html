@@ -1,40 +1,143 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    /* Profile Page Specific Styles */
+    .profile-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .order-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .order-status-badge {
+        padding: 0.5rem 1rem;
+        background: #667eea;
+        color: white;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .order-total-price {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #667eea;
+        margin-top: 0.5rem;
+    }
+</style>
+
 <div class="container">
     <h2 style="margin-bottom: 2rem;">My Profile</h2>
-    
-    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 2rem;">
-        <h3>Account Information</h3>
-        <p style="margin-top: 1rem;"><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+
+    <div class="profile-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3>Account Information</h3>
+            <button type="button" id="edit-profile-btn" onclick="toggleEditMode()"
+                style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 5px 15px; border-radius: 6px; cursor: pointer;">
+                <i class="fas fa-edit"></i> Edit Details
+            </button>
+        </div>
+
+        <form method="POST" id="profile-form">
+            {% csrf_token %}
+            {% if user_form.errors %}
+            <div class="alert alert-error">
+                <strong>Error:</strong> Please correct the errors below.
+            </div>
+            {% endif %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" disabled
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" disabled
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label>Username</label>
+                <input type="text" name="username" value="{{ user.username }}" class="form-control" disabled
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label>Email Address</label>
+                <input type="email" name="email" value="{{ user.email }}" class="form-control" disabled
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+
+            <button type="submit" id="save-profile-btn" class="btn"
+                style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: none;">Update
+                Profile</button>
+        </form>
     </div>
-    
+
+    <script>
+        function toggleEditMode() {
+            const inputs = document.querySelectorAll('#profile-form input');
+            const saveBtn = document.getElementById('save-profile-btn');
+            const editBtn = document.getElementById('edit-profile-btn');
+
+            inputs.forEach(input => {
+                input.disabled = !input.disabled;
+                if (!input.disabled) {
+                    input.style.borderColor = 'var(--secondary-color)';
+                    input.style.backgroundColor = '#fff';
+                } else {
+                    input.style.borderColor = '#ddd';
+                    input.style.backgroundColor = ''; // Reset to default or inherited
+                }
+            });
+
+            if (saveBtn.style.display === 'none') {
+                saveBtn.style.display = 'inline-block';
+                editBtn.style.display = 'none';
+            } else {
+                saveBtn.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+            }
+        }
+    </script>
+
     <h3 style="margin-bottom: 1.5rem;">Order History</h3>
-    
+
     {% if orders %}
     {% for order in orders %}
-    <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1rem;">
+    <div class="order-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <div>
                 <h4>Order #{{ order.id }}</h4>
                 <p style="color: #666;">{{ order.created_at|date:"F d, Y" }}</p>
             </div>
             <div style="text-align: right;">
-                <span style="padding: 0.5rem 1rem; background: #667eea; color: white; border-radius: 20px;">{{ order.status }}</span>
-                <p style="font-size: 1.3rem; font-weight: 600; color: #667eea; margin-top: 0.5rem;">${{ order.total_price }}</p>
+                <span class="order-status-badge">{{ order.status|title }}</span>
+                <p class="order-total-price">₹{{ order.total_price }}</p>
             </div>
         </div>
-        
+
         <div style="border-top: 1px solid #e0e0e0; padding-top: 1rem;">
             {% for item in order.items.all %}
-            <p style="color: #666;">{{ item.quantity }}x {{ item.product.name }} - ${{ item.price }}</p>
+            <p style="color: #666;">{{ item.quantity }}x {{ item.product.name }} - ₹{{ item.price }}</p>
             {% endfor %}
         </div>
     </div>
     {% endfor %}
     {% else %}
-    <div style="text-align: center; padding: 3rem; background: white; border-radius: 15px;">
+    <div style="text-align: center; padding: 3rem; background: white; border-radius: 12px;">
         <p style="color: #666; margin-bottom: 1rem;">No orders yet</p>
         <a href="/products/" class="btn">Start Shopping</a>
     </div>

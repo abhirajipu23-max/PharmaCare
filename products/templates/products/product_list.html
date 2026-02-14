@@ -5,34 +5,102 @@
     <h2 style="margin-bottom: 1.5rem;">
         {% if query %}Search Results for "{{ query }}"{% else %}All Products{% endif %}
     </h2>
-    
-    <div class="product-grid" style="display: block;">
+
+    <div class="product-grid" id="product-grid">
         {% for product in products %}
-        <div class="product-card" style="width:100%; margin-bottom: 1.5rem;">
-            
-            {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
-                 style="width:150px; height:auto; margin-bottom:1rem; border-radius:8px;">
-            {% endif %}
-
-            {% if product.requires_prescription %}
-            <span class="prescription-badge">⚕️ Prescription Required</span>
-            {% endif %}
-
-            <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">${{ product.price }}</div>
-            <p style="color: #666; margin-bottom: 1rem;">Stock: {{ product.stock }} units</p>
-
-            <div style="display: flex; gap: 0.5rem;">
-                <a href="/product/{{ product.slug }}/" class="btn">View Details</a>
-                {% if user.is_authenticated %}
-                <a href="/cart/add/{{ product.id }}/" class="btn btn-secondary">Add to Cart</a>
-                {% endif %}
-            </div>
-        </div>
+        {% include 'products/partials/product_card.html' %}
         {% empty %}
-        <p style="text-align: center; padding: 3rem;">No products found.</p>
+        <p style="text-align: center; padding: 3rem; grid-column: 1 / -1;">No products found in this category.</p>
         {% endfor %}
     </div>
+
+    {% if products.has_next %}
+    <div class="pagination" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <a href="?page={{ products.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}"
+            class="btn-primary" id="load-more-btn" style="padding: 1rem 3rem;">
+            Load More Products <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
+        </a>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const productGrid = document.getElementById('product-grid');
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.getAttribute('href');
+                const originalText = this.innerHTML;
+                this.innerHTML = 'Loading... <i class="fas fa-spinner fa-spin"></i>';
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+
+                // Add ajax=1 safely
+                const fetchUrl = new URL(url, window.location.href);
+                fetchUrl.searchParams.set('ajax', '1');
+
+                fetch(fetchUrl.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Append new cards
+                        const newCards = doc.body.innerHTML;
+                        // Note: The partial returns raw HTML, not a full body, 
+                        // but DOMParser puts it in body. 
+                        // However, we key off the specific partial structure.
+
+                        // More robust way: simply append the text since we trust the source
+                        productGrid.insertAdjacentHTML('beforeend', html);
+
+                        // Check for next page
+                        // The partial should ideally return the next page number/url in a hidden element
+                        // We need to parse that out.
+                        // Let's assume the partial ends with a hidden div having data-next-page
+
+                        // Re-parse the appended HTML to find the next page data
+                        // Use querySelector for class
+                        const nextPageData = doc.querySelector('.pagination-metadata');
+
+                        if (nextPageData) {
+                            const nextPage = nextPageData.getAttribute('data-next-page');
+                            let newUrl = new URL(url, window.location.href);
+                            newUrl.searchParams.set('page', nextPage);
+                            // We do NOT add ajax=1 to the href link itself, only to the fetch call below?
+                            // No, let's keep the href clean and handle it in the click event.
+                            loadMoreBtn.setAttribute('href', newUrl.toString());
+
+                            // Update URL in browser address bar - DISABLED as per user request
+                            // const currentUrl = new URL(window.location.href);
+                            // currentUrl.searchParams.set('page', nextPage);
+                            // window.history.pushState({}, '', currentUrl);
+
+                            // Reset button
+                            loadMoreBtn.innerHTML = originalText;
+                            loadMoreBtn.style.opacity = '1';
+                            loadMoreBtn.style.pointerEvents = 'auto';
+                        } else {
+                            // No more pages
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error loading products:', err);
+                        loadMoreBtn.innerHTML = 'Error loading. Try again.';
+                        loadMoreBtn.style.pointerEvents = 'auto';
+                    });
+            });
+        }
+    });
+</script>
 {% endblock %}

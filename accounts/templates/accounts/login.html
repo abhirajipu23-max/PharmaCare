@@ -5,7 +5,8 @@
 <style>
     /* Center the login card vertically and horizontally */
     .auth-wrapper {
-        min-height: 60vh; /* Takes up reasonable screen height */
+        min-height: 60vh;
+        /* Takes up reasonable screen height */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -15,7 +16,8 @@
     .auth-container {
         background: var(--white);
         width: 100%;
-        max-width: 420px; /* Standard width for login cards */
+        max-width: 420px;
+        /* Standard width for login cards */
         padding: 2.5rem;
         border-radius: 12px;
         box-shadow: var(--shadow);
@@ -75,7 +77,8 @@
     }
 
     .btn-login:hover {
-        background: #013544; /* Slightly darker than primary */
+        background: #013544;
+        /* Slightly darker than primary */
     }
 
     .register-link {
@@ -89,7 +92,7 @@
         color: var(--secondary-color);
         font-weight: 600;
     }
-    
+
     .register-link a:hover {
         text-decoration: underline;
     }
@@ -98,12 +101,15 @@
     @media (max-width: 480px) {
         .auth-container {
             padding: 1.5rem;
-            box-shadow: none; /* Flatten on mobile */
+            box-shadow: none;
+            /* Flatten on mobile */
             border: none;
             background: transparent;
         }
+
         .auth-wrapper {
-            align-items: flex-start; /* Align to top on mobile */
+            align-items: flex-start;
+            /* Align to top on mobile */
         }
     }
 </style>
@@ -111,31 +117,33 @@
 <div class="auth-wrapper">
     <div class="auth-container">
         <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
-        
+
         <form method="POST">
             {% csrf_token %}
-            
+
             {% if form.errors %}
-                <div class="alert alert-error" style="margin-bottom: 1.5rem;">
-                    <i class="fas fa-exclamation-circle"></i> Invalid username or password.
-                </div>
+            <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+                <i class="fas fa-exclamation-circle"></i> Invalid username or password.
+            </div>
             {% endif %}
 
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Username</label>
                 {{ form.username }}
             </div>
-            
+
             <div class="form-group">
                 <label for="{{ form.password.id_for_label }}">Password</label>
                 {{ form.password }}
             </div>
-            
+
             <button type="submit" class="btn-login">Secure Login</button>
         </form>
-        
+
         <div class="register-link">
             Don't have an account? <a href="/accounts/register/">Register here</a>
+            <br><br>
+            <a href="{% url 'password_reset' %}" style="color: #666; font-size: 0.9rem;">Forgot Password?</a>
         </div>
     </div>
 </div>

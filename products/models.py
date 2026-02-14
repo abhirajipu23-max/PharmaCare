@@ -20,6 +20,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
     image = models.ImageField(upload_to='products/', blank=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     requires_prescription = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

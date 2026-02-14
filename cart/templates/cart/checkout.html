@@ -1,46 +1,81 @@
 {% extends 'base.html' %}
 
+<style>
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
 {% block content %}
-<div class="container">
-    <h2 style="margin-bottom: 2rem;">Checkout</h2>
-    
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-        <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+<div class="container" style="margin-top: 2rem;">
+
+    <h2 class="section-title">Checkout</h2>
+
+    <div class="checkout-grid"
+        style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: flex-start;">
+
+        <!-- SHIPPING INFO -->
+        <div class="product-card" style="padding: 2rem; border-radius: 15px;">
             <h3 style="margin-bottom: 1.5rem;">Shipping Information</h3>
             <form method="POST">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" name="full_name" required>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.4rem; font-weight: 500;">Full Name</label>
+                    <input type="text" name="full_name" required
+                        style="width: 100%; padding: 0.7rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem;">
                 </div>
-                
-                <div class="form-group">
-                    <label>Shipping Address</label>
-                    <textarea name="shipping_address" rows="4" required></textarea>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.4rem; font-weight: 500;">Shipping Address</label>
+                    <textarea name="shipping_address" rows="4" required
+                        style="width: 100%; padding: 0.7rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; resize: vertical;"></textarea>
                 </div>
-                
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" name="phone" required>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display:block; margin-bottom: 0.4rem; font-weight: 500;">Phone Number</label>
+                    <input type="tel" name="phone" required
+                        style="width: 100%; padding: 0.7rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem;">
                 </div>
-                
-                <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Place Order</button>
+
+                <button type="submit" class="btn-primary"
+                    style="width: 100%; padding: 1rem; font-size: 1.05rem; text-align:center;">
+                    Place Order
+                </button>
             </form>
         </div>
-        
+
+        <!-- ORDER SUMMARY -->
         <div>
-            <div class="cart-total">
+            <div class="product-card" style="padding: 2rem; border-radius: 15px;">
                 <h3 style="margin-bottom: 1rem;">Order Summary</h3>
+
                 {% for item in cart.items.all %}
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; color: #666;">
+                <div
+                    style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; color: var(--text-light); font-size: 0.9rem;">
                     <span>{{ item.product.name }} ({{ item.quantity }}x)</span>
-                    <span>${{ item.get_subtotal }}</span>
+                    <span>₹{{ item.get_subtotal|floatformat:2 }}</span>
                 </div>
+                {% empty %}
+                <p style="color: var(--text-light);">Your cart is empty.</p>
                 {% endfor %}
-                <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid #e0e0e0;">
-                <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #667eea;">
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+
+                <div
+                    style="display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 700; color: var(--primary-color);">
                     <span>Total</span>
-                    <span>${{ cart.get_total }}</span>
+                    <span>₹{{ cart.get_total|floatformat:2 }}</span>
                 </div>
             </div>
         </div>

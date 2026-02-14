@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .results-layout {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+    }
+
+    .analysis-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        height: fit-content;
+    }
+
+    @media (max-width: 900px) {
+        .results-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .analysis-card {
+            order: -1;
+            /* Show medicines first on mobile */
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="container" style="padding: 2rem 1rem;">
+    <h2 style="margin-bottom: 2rem;">Prescription Analysis Results</h2>
+
+    <div class="results-layout">
+        <!-- Left: Analysis Summary -->
+        <div class="analysis-card">
+            <h4 style="margin-bottom: 1rem; color: var(--primary-color);">Detected Medicines</h4>
+            {% if detected_medicines %}
+            <ul style="list-style: none; padding: 0;">
+                {% for med in detected_medicines %}
+                <li
+                    style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-check-circle" style="color: #28a745;"></i> {{ med }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color: #666;">No valid medicine names identified.</p>
+            {% endif %}
+        </div>
+
+        <!-- Right: Matched Products -->
+        <div class="results-grid">
+            <h4 style="margin-bottom: 1rem;">Suggested Products</h4>
+
+            {% if matched_products %}
+            <div class="product-grid">
+                {% for product in matched_products %}
+                {% include 'products/partials/product_card.html' %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 12px;">
+                <i class="fas fa-search-minus fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                <p>No matching products found in our store.</p>
+                <a href="/products/" class="btn-primary" style="margin-top: 1rem;">Browse All Medicines</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

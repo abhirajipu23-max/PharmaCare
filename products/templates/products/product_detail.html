@@ -5,16 +5,27 @@
     <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
             <div>
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 12px;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 12px;"
+                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                {% elif product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 12px;"
+                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                {% else %}
+                <div
+                    style="width: 100%; height: 400px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                    <span style="color: #999;">No Image</span>
+                </div>
+                {% endif %}
             </div>
-            
+
             <div>
                 {% if product.requires_prescription %}
                 <span class="prescription-badge">⚕️ Prescription Required</span>
                 {% endif %}
                 <h1 style="margin: 1rem 0;">{{ product.name }}</h1>
                 <p style="color: #666; margin-bottom: 1rem;">Category: {{ product.category.name }}</p>
-                <div class="product-price" style="margin: 1.5rem 0;">${{ product.price }}</div>
+                <div class="product-price" style="margin: 1.5rem 0;">₹{{ product.price }}</div>
                 <p style="color: #666; margin-bottom: 1rem;">
                     {% if product.stock > 0 %}
                     <span style="color: #28a745; font-weight: 600;">✓ In Stock ({{ product.stock }} units)</span>
@@ -22,16 +33,18 @@
                     <span style="color: #dc3545; font-weight: 600;">✗ Out of Stock</span>
                     {% endif %}
                 </p>
-                
+
                 <div style="margin: 2rem 0;">
                     <h3>Description</h3>
                     <p style="line-height: 1.8; color: #555;">{{ product.description }}</p>
                 </div>
-                
+
                 {% if user.is_authenticated and product.stock > 0 %}
-                <a href="/cart/add/{{ product.id }}/" class="btn" style="font-size: 1.1rem; padding: 1rem 2rem;">Add to Cart</a>
+                <a href="{% url 'cart:add_to_cart' product.id %}" class="btn"
+                    style="font-size: 1.1rem; padding: 1rem 2rem;">Add to Cart</a>
                 {% elif not user.is_authenticated %}
-                <p style="color: #666;">Please <a href="/accounts/login/" style="color: #667eea;">login</a> to purchase</p>
+                <p style="color: #666;">Please <a href="/accounts/login/" style="color: #667eea;">login</a> to purchase
+                </p>
                 {% endif %}
             </div>
         </div>

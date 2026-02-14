@@ -6,13 +6,29 @@ from products.models import Product, Order, OrderItem
 
 @login_required
 def cart_detail(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
+    # Ensure only one cart exists
+    carts = Cart.objects.filter(user=request.user)
+    if carts.exists():
+        cart = carts.last()
+        if carts.count() > 1:
+            # Delete older duplicates if they exist
+            carts.exclude(id=cart.id).delete()
+    else:
+        cart = Cart.objects.create(user=request.user)
+    
     return render(request, 'cart/cart_detail.html', {'cart': cart})
 
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
+    
+    # robust cart retrieval
+    carts = Cart.objects.filter(user=request.user)
+    if carts.exists():
+        cart = carts.last()
+    else:
+        cart = Cart.objects.create(user=request.user)
+
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     
     if not created:
@@ -69,3 +85,38 @@ def checkout(request):
         return redirect('products:home')
     
     return render(request, 'cart/checkout.html', {'cart': cart})
+
+
+
+
+
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import Cart
+from .serializers import CartSerializer
+
+class CartViewSet(viewsets.ModelViewSet):
+    serializer_class = CartSerializer
+    queryset = Cart.objects.none()  # REQUIRED
+
+    def get_queryset(self):
+        session_key = self.request.session.session_key
+        if not session_key:
+            self.request.session.create()
+        return Cart.objects.filter(session_key=self.request.session.session_key)
+
+    def perform_create(self, serializer):
+        session_key = self.request.session.session_key
+        if not session_key:
+            self.request.session.create()
+        serializer.save(session_key=self.request.session.session_key)
+
+    @action(detail=True, methods=["get"])
+    def schedule(self, request, pk=None):
+        cart = self.get_object()
+        return Response({
+            "cart_id": cart.id,
+            "total": cart.get_total(),
+            "created_at": cart.created_at,
+        })
