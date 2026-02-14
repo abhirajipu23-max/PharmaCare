@@ -5,10 +5,8 @@ import logging
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-import easyocr
-import groq
-import json
-import os
+
+
 
 def home(request):
     # Fetch all active products sorted by newest first
@@ -104,6 +102,10 @@ class ProductsApi(viewsets.ModelViewSet):
         })
 
 def upload_rx(request):
+    import easyocr
+    import groq
+    import json
+    import os
     if request.method == 'POST' and request.FILES.get('rx_image'):
         try:
             image_file = request.FILES['rx_image']
