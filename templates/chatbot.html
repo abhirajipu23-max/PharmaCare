@@ -52,7 +52,7 @@
     /* Chat Bot Styles - Self-contained */
     .chatbot-tooltip {
         position: absolute;
-        bottom: 55px;
+        bottom: 70px;
         right: 0;
         background: #24aeb1;
         color: #ffffff;
@@ -340,15 +340,19 @@
 
     @media (max-width: 767px) {
         .chatbot-container {
-            bottom: 80px;
+            bottom: 100px;
             right: 15px;
             z-index: 9999;
         }
 
+        .chatbot-tooltip {
+            bottom: 65px;
+        }
+
         .chatbot-button {
-            width: 50px;
-            height: 50px;
-            font-size: 22px;
+            width: 65px;  /* CHANGED: Increased from 50px to 65px for larger icon on mobile */
+            height: 65px; /* CHANGED: Increased from 50px to 65px for larger icon on mobile */
+            font-size: 30px; /* CHANGED: Increased from 22px to 30px for larger icon on mobile */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
@@ -366,20 +370,24 @@
 
     @media (max-width: 480px) {
         .chatbot-container {
-            bottom: 70px;
+            bottom: 95px;
             right: 10px;
         }
 
+        .chatbot-tooltip {
+            bottom: 60px;
+        }
+
         .chatbot-button {
-            width: 45px;
-            height: 45px;
-            font-size: 20px;
+            width: 60px;  /* CHANGED: Increased from 45px to 60px for larger icon on small mobile */
+            height: 60px; /* CHANGED: Increased from 45px to 60px for larger icon on small mobile */
+            font-size: 28px; /* CHANGED: Increased from 20px to 28px for larger icon on small mobile */
         }
     }
 
     @media (max-width: 767px) and (orientation: landscape) {
         .chatbot-container {
-            bottom: 50px;
+            bottom: 70px;
         }
     }
 
@@ -527,10 +535,6 @@
 
             // Newlines to <br>
             formattedText = formattedText.replace(/\n/g, '<br>');
-
-            // Bullet points (simple handling for - or *)
-            // This is a basic approach; for full markdown support, a library is better, 
-            // but we want to keep it "self-contained" as per original file structure.
 
             contentDiv.innerHTML = formattedText;
 
