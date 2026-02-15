@@ -5,18 +5,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]  
 
+ALLOWED_HOSTS = ["*"]
+
 CSRF_TRUSTED_ORIGINS = [
+    "https://*.up.railway.app",
     "https://*.onrender.com",
     "http://127.0.0.1:8000",
-    "http://localhost:8000"
-    "https://*.onrender.com",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000"
+    "http://localhost:8000",
 ]
+
 
 # Render Deployment Configuration
 if 'RENDER' in os.environ:
