@@ -6,7 +6,15 @@
         max-width: 600px;
         width: 100%;
         margin: 0 auto;
-        padding: 4rem 1rem;
+        padding: 2rem 1rem;
+    }
+
+    .upload-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        width: 100%;
     }
 
     .file-upload-wrapper {
@@ -17,6 +25,7 @@
         cursor: pointer;
         position: relative;
         transition: 0.3s;
+        margin-bottom: 1rem;
     }
 
     .file-upload-wrapper:hover {
@@ -24,65 +33,84 @@
         background: #f9f9f9;
     }
 
-    @media (max-width: 768px) {
-        .rx-upload-container {
-            padding: 2rem 1rem;
-        }
-
-        .card {
-            padding: 1.5rem !important;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-        }
+    .file-upload-wrapper input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
     }
-</style>
 
-<div class="container rx-upload-container">
-    <div class="card"
-        style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 1.5rem;">Upload Prescription</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 2rem;">
-            Upload a clear image of your prescription. Our AI will analyze it and suggest medicines for you.
-        </p>
+    .upload-icon {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+        font-size: 3rem;
+    }
 
-        <form id="rx-upload-form" method="post" enctype="multipart/form-data"
-            style="display: flex; flex-direction: column; gap: 1.5rem;">
-            {% csrf_token %}
+    .file-name-display {
+        margin-top: 0.5rem;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        word-break: break-all;
+        padding: 0 0.5rem;
+        min-height: 1.5rem;
+        font-weight: 500;
+    }
 
-            <div class="file-upload-wrapper">
-                <input type="file" name="rx_image" accept="image/*" required
-                    style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;"
-                    onchange="document.getElementById('file-name').textContent = this.files[0].name">
-                <i class="fas fa-cloud-upload-alt fa-3x"
-                    style="color: var(--secondary-color); margin-bottom: 1rem;"></i>
-                <p style="margin: 0; font-weight: 500;">Click to upload or drag and drop</p>
-                <p id="file-name" style="margin-top: 0.5rem; color: var(--primary-color); font-size: 0.9rem;"></p>
-            </div>
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        background: var(--accent-color);
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
 
-            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                Analyze & Search Medicines
-            </button>
-        </form>
+    .btn-primary:hover {
+        background: #e68a00;
+    }
 
-        {% if error %}
-        <div class="alert alert-danger"
-            style="margin-top: 1rem; padding: 10px; background: #ffebee; color: #c62828; border-radius: 4px;">
-            {{ error }}
-        </div>
-        {% endif %}
-    </div>
-</div>
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 
-<div id="loading-overlay"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; flex-direction: column; align-items: center; justify-content: center;">
-    <div class="spinner"></div>
-    <h3 style="color: var(--primary-color); margin-top: 1.5rem; font-weight: 600;">Analyzing Prescription...</h3>
-    <p style="color: #666; font-size: 1.1rem;">Please wait while AI identifies your medicines.</p>
-</div>
+    .alert-danger {
+        margin-top: 1rem;
+        padding: 12px 15px;
+        background: #ffebee;
+        color: #c62828;
+        border-radius: 6px;
+        border-left: 4px solid #c62828;
+        font-size: 0.95rem;
+    }
 
-<style>
+    /* Loading Overlay */
+    #loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+    }
+
     .spinner {
         width: 60px;
         height: 60px;
@@ -93,30 +121,233 @@
     }
 
     @keyframes spin {
-        0% {
-            transform: rotate(0deg);
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .rx-upload-container {
+            padding: 1rem;
         }
 
-        100% {
-            transform: rotate(360deg);
+        .upload-card {
+            padding: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem !important;
+        }
+
+        .upload-card p {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .file-upload-wrapper {
+            padding: 1.5rem;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+        }
+
+        .file-upload-wrapper p {
+            font-size: 0.9rem;
+        }
+
+        .file-name-display {
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            padding: 10px 16px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .upload-card {
+            padding: 1.25rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+        }
+
+        .upload-card p {
+            font-size: 0.9rem;
+        }
+
+        .file-upload-wrapper {
+            padding: 1.25rem;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .file-upload-wrapper p {
+            font-size: 0.85rem;
+        }
+
+        .file-name-display {
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border-width: 5px;
+        }
+
+        #loading-overlay h3 {
+            font-size: 1.2rem;
+        }
+
+        #loading-overlay p {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .upload-card {
+            padding: 1rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        .file-upload-wrapper {
+            padding: 1rem;
+        }
+
+        .upload-icon {
+            font-size: 1.8rem;
+        }
+
+        .btn-primary {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 768px) and (orientation: landscape) {
+        .rx-upload-container {
+            padding: 0.5rem;
+        }
+
+        .upload-card {
+            padding: 1rem;
+        }
+
+        .file-upload-wrapper {
+            padding: 1rem;
         }
     }
 </style>
 
+<div class="container rx-upload-container">
+    <div class="upload-card">
+        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 1.5rem;">Upload Prescription</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+            Upload a clear image of your prescription. Our AI will analyze it and suggest medicines for you.
+        </p>
+
+        <form id="rx-upload-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="file-upload-wrapper">
+                <input type="file" name="rx_image" accept="image/*" required
+                       onchange="updateFileName(this)">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p style="margin: 0; font-weight: 500;">Click to upload or drag and drop</p>
+                <p class="file-name-display" id="file-name"></p>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-microscope"></i>
+                Analyze & Search Medicines
+            </button>
+        </form>
+
+        {% if error %}
+        <div class="alert-danger">
+            <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <h3 style="color: var(--primary-color); margin-top: 1.5rem; font-weight: 600;">Analyzing Prescription...</h3>
+    <p style="color: #666; font-size: 1.1rem;">Please wait while AI identifies your medicines.</p>
+</div>
+
 <script>
+    function updateFileName(input) {
+        const fileNameDisplay = document.getElementById('file-name');
+        if (input.files && input.files[0]) {
+            const fileName = input.files[0].name;
+            // Truncate filename if too long on mobile
+            if (window.innerWidth <= 480 && fileName.length > 25) {
+                fileNameDisplay.textContent = fileName.substring(0, 22) + '...';
+            } else {
+                fileNameDisplay.textContent = fileName;
+            }
+        } else {
+            fileNameDisplay.textContent = '';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('rx-upload-form');
         const loader = document.getElementById('loading-overlay');
+        const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
         if (form) {
             form.addEventListener('submit', function (e) {
-                // simple client-side validation check before showing loader
                 const fileInput = document.querySelector('input[type="file"]');
-                if (fileInput.files.length > 0) {
+                if (fileInput && fileInput.files.length > 0) {
                     loader.style.display = 'flex';
+                    // Prevent double submission
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                    }
+                } else {
+                    e.preventDefault();
+                    alert('Please select a file to upload.');
                 }
             });
         }
+
+        // Handle window resize for filename truncation
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                const fileInput = document.querySelector('input[type="file"]');
+                const fileNameDisplay = document.getElementById('file-name');
+                if (fileInput && fileInput.files && fileInput.files[0] && fileNameDisplay.textContent) {
+                    const fileName = fileInput.files[0].name;
+                    if (window.innerWidth <= 480 && fileName.length > 25) {
+                        fileNameDisplay.textContent = fileName.substring(0, 22) + '...';
+                    } else if (window.innerWidth > 480) {
+                        fileNameDisplay.textContent = fileName;
+                    }
+                }
+            }, 250);
+        });
     });
 </script>
 {% endblock %}

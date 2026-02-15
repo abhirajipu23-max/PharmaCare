@@ -121,14 +121,27 @@ def upload_rx(request):
             
             client = groq.Groq(api_key=api_key)
             
-            # Prompt for Vision Model (Llama 4 Scout)
+            # Improved Prompt for Vision Model
             messages = [
                 {
                     "role": "user",
                     "content": [
                         {
                             "type": "text", 
-                            "text": "Identify all medicine names in this prescription image. Return ONLY a valid JSON list of strings (e.g. [\"Medicine A\", \"Medicine B\"]). Do not include any other text or markdown formatting."
+                            "text": """Analyze this prescription image and extract ONLY actual pharmaceutical medicine/drug names.
+                            
+IMPORTANT RULES:
+- Return ONLY a valid JSON list of strings (e.g. ["Medicine A", "Medicine B"])
+- ONLY include actual medicine names (like "Paracetamol", "Amoxicillin", "Metformin")
+- IGNORE any non-medicine text like:
+  * Instructions (e.g., "Take twice daily", "After meals")
+  * Patient information (e.g., "John Doe", "Age 45")
+  * Doctor information (e.g., "Dr. Smith", "License #123")
+  * Dates, addresses, or clinic names
+  * Non-medical terms like "Backtesting", "Paper Trading", etc.
+- If no actual medicine names are found, return an empty list []
+
+Do not include any other text or markdown formatting."""
                         },
                         {
                             "type": "image_url",
@@ -145,7 +158,7 @@ def upload_rx(request):
                 chat_completion = client.chat.completions.create(
                     messages=messages,
                     model="meta-llama/llama-4-scout-17b-16e-instruct",
-                    temperature=0.1 # Low temperature for more deterministic JSON
+                    temperature=0.1
                 )
                 response_content = chat_completion.choices[0].message.content.strip()
             except groq.BadRequestError as e:
@@ -177,17 +190,40 @@ def upload_rx(request):
                 detected_medicines = []
                 logging.error(f"Failed to parse Groq response: {response_content}")
             
-            # Product Matching
-            matched_products = []
+            # Additional filtering: Only keep items that might be medicine names
+            # This helps filter out obvious non-medicine terms
+            filtered_medicines = []
+            common_non_medical = ['backtesting', 'paper trading', 'trading alerts', 'algorithmic trading', 
+                                 'buy', 'sell', 'signal', 'indicator', 'strategy', 'test', 'demo']
+            
             for med in detected_medicines:
+                med_lower = med.lower()
+                # Skip if it contains common non-medical terms
+                if any(term in med_lower for term in common_non_medical):
+                    continue
+                # Skip very short terms (likely not medicine names)
+                if len(med) < 3:
+                    continue
+                filtered_medicines.append(med)
+            
+            # Product Matching - only with filtered medicines
+            matched_products = []
+            for med in filtered_medicines:
                 # Search by name (icontains)
                 matches = Product.objects.filter(name__icontains=med, active=True)
                 for match in matches:
                     if match not in matched_products:
                         matched_products.append(match)
             
+            # If no medicines detected or no matches found, return false
+            if not filtered_medicines or not matched_products:
+                return render(request, 'products/rx_results.html', {
+                    'detected_medicines': filtered_medicines if filtered_medicines else False,
+                    'matched_products': False
+                })
+            
             return render(request, 'products/rx_results.html', {
-                'detected_medicines': detected_medicines,
+                'detected_medicines': filtered_medicines,
                 'matched_products': matched_products
             })
 
