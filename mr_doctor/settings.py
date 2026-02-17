@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'cart',
     'accounts',
     'django_extensions',
+    'Chatbot',
 ]
 
 MEDIA_URL = '/media/'
